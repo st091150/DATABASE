@@ -136,13 +136,15 @@ bool srav(const DB& X, const DB& Y, const TIME& l) {
 		a = N - b;
 	}
 	else {
-		a = 360 - N + b;
+		if (l.tm_year % 4 == 0)a = 361 - N + b;
+		else a = 360 - N + b;
 	}
 	if (N < c) {
 		k = N - c;
 	}
 	else {
-		k = 360 - N + c;
+		if (l.tm_year % 4 == 0)k = 359 - N + c;
+		else k = 360 - N + c;
 	}
 	return a < b;
 }
