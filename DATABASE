@@ -128,25 +128,57 @@ bool operator <(const DB& X, const DB& Y) {
 }
 
 bool srav(const DB& X, const DB& Y, const TIME& l) {
-	int N = 30 * (l.tm_mon-1) + l.tm_mday;
-	int a,k;
-	int b = 30 * (X.list.dofb.M-1) + X.list.dofb.D;
-	int c = 30 * (Y.list.dofb.M-1) + Y.list.dofb.D;
+
+	int a, k,N = 0,b = 0,c = 0;
+	for (int i = 1; i < l.tm_mon;++i) {
+		if (i == 2 && l.tm_year % 4 == 0) {
+			N += 29;
+			b += 29;
+			c += 29;
+		}
+		else if (i == 2) {
+			N += 28;
+			b += 28;
+			c += 28;
+		}
+		else if ( i < 9 && (i % 2 == 1 || i == 8)) {
+			N += 31;
+			b += 31;
+			c += 31;
+		}
+		else if (i >= 9 && i % 2 == 1) {
+			N += 30;
+			b += 30;
+			c += 30;
+		}
+		else {
+			N += 31;
+			b += 31;
+			c += 31;
+		}
+	}
+	N += l.tm_mday;
+	b += X.list.dofb.D;
+	c += Y.list.dofb.D;
 	if (N < b) {
 		a = N - b;
 	}
+	else if (l.tm_year+1 % 4==0) {
+		a = 366 - N + b;
+	}
 	else {
-		if (l.tm_year % 4 == 0)a = 361 - N + b;
-		else a = 360 - N + b;
+		a = 365 - N + b;
 	}
 	if (N < c) {
 		k = N - c;
 	}
-	else {
-		if (l.tm_year % 4 == 0)k = 359 - N + c;
-		else k = 360 - N + c;
+	else if (l.tm_year + 1 % 4 == 0) {
+		k = 366 - N + b;
 	}
-	return a < b;
+	else {
+		k = 365 - N + b;
+	}
+	return  k < a;
 }
 
 void FindbyPN(const List& l) {
