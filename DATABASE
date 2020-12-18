@@ -129,32 +129,32 @@ bool operator <(const DB& X, const DB& Y) {
 
 bool srav(const DB& X, const DB& Y, const TIME& l) {
 
-	int a, k,N = 0,b = 0,c = 0;
-	for (int i = 1; i < l.tm_mon;++i) {
+	int a, k, N = 0, b = 0, c = 0;
+	for (int i = 1; i < 12; ++i) {
 		if (i == 2 && l.tm_year % 4 == 0) {
-			N += 29;
-			b += 29;
-			c += 29;
+			if(i < l.tm_mon)N += 29;
+			if(i < X.list.dofb.M)b += 29;
+			if (i < Y.list.dofb.M)c += 29;
 		}
 		else if (i == 2) {
-			N += 28;
-			b += 28;
-			c += 28;
+			if (i < l.tm_mon)N += 28;
+			if (i < X.list.dofb.M)b += 28;
+			if (i < Y.list.dofb.M)c += 28;
 		}
-		else if ( i < 9 && (i % 2 == 1 || i == 8)) {
-			N += 31;
-			b += 31;
-			c += 31;
+		else if (i < 9 && (i % 2 == 1 || i == 8)) {
+			if (i < l.tm_mon)N += 31;
+			if (i < X.list.dofb.M)b += 31;
+			if (i < Y.list.dofb.M)c += 31;
 		}
 		else if (i >= 9 && i % 2 == 1) {
-			N += 30;
-			b += 30;
-			c += 30;
+			if (i < l.tm_mon)N += 30;
+			if (i < X.list.dofb.M)b += 30;
+			if (i < Y.list.dofb.M)c += 30;
 		}
 		else {
-			N += 31;
-			b += 31;
-			c += 31;
+			if (i < l.tm_mon)N += 31;
+			if (i < X.list.dofb.M)b += 31;
+			if (i < Y.list.dofb.M)c += 31;
 		}
 	}
 	N += l.tm_mday;
@@ -163,7 +163,7 @@ bool srav(const DB& X, const DB& Y, const TIME& l) {
 	if (N < b) {
 		a = N - b;
 	}
-	else if (l.tm_year+1 % 4==0) {
+	else if (l.tm_year + 1 % 4 == 0) {
 		a = 366 - N + b;
 	}
 	else {
@@ -173,12 +173,12 @@ bool srav(const DB& X, const DB& Y, const TIME& l) {
 		k = N - c;
 	}
 	else if (l.tm_year + 1 % 4 == 0) {
-		k = 366 - N + b;
+		k = 366 - N + c;
 	}
 	else {
-		k = 365 - N + b;
+		k = 365 - N + c;
 	}
-	return  k < a;
+	return  a < k;
 }
 
 void FindbyPN(const List& l) {
